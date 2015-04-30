@@ -6,7 +6,7 @@
 
 if [ $1 ]
 then
-    # do stuff
+    # do some stuff
 else
     help
 fi
@@ -33,14 +33,14 @@ git add .
 git commit -m "add $1"
 }
 
-function todo_history() {
+function history() {
 git log
 }
 
-function todo_init() {
+function init() {
 
 # check for presence of gitignore file that ignores everything but .todo
-# grep .gitignore
+# grep -l '!*.todo'  *.gitignore
 if
     # gitignore is not there
     echo "* /n !*.todo" > .gitignore
@@ -49,13 +49,13 @@ else
 fi
 }
 
-function todo_del() {
-rm $1.todo
+function del() {
+rm [ $1 ].todo
 git add .
 git commit -m "delete $1"
 }
 
-function todo_purge() {
+function purge() {
 rm *.todo
 git add .
 git commit -m "delete all todos"
