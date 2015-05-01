@@ -2,16 +2,14 @@
 
 function help () {
 echo "todo - a script that uses obsessive-compulsion and git to get things done."
-echo "		      be sure to isolate this from any other git-based projects."
-echo "			 you have to get git installed for this to work. git it!"
 echo ""
 echo "		syntax:		  todo FILENAME 'optional description'"
 echo ""	
 echo "		todo count		- count number of todos";
 echo "		todo del FILE		- delete FILE";
+echo "		todo meta 'QUERY'	- search todos for 'QUERY'";
+echo "		todo old		- return the name of the oldest todo";
 echo "		todo purge		- delete all todos";
-echo "		todo meta 'QUERY'	- search todos content for 'QUERY'";
-echo "		todo ancient		- return the name of the oldest file"
 echo ""
 echo "								  Any questions?"
 }
@@ -19,7 +17,6 @@ echo "								  Any questions?"
 if [ $1 ]
 then
   case "$1" in
-  init)
   "count")
     ls -l ./*.todo 2> /dev/null | wc -l
   ;;
@@ -29,8 +26,8 @@ then
       grep --include=\*.todo -rnw . -e "$2"
     fi
   ;;
-  "ancient")
-    ls -l *.todo -t | head -n 1
+  "old")
+    ls -t -l *.todo | head -n 1
   ;;
   "purge")
     read -p "Press Y to purge all todo files and any other key to cancel." RESP
