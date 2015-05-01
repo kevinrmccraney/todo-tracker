@@ -1,11 +1,13 @@
-#!/bin/sh
+#! /bin/sh
 
 function help () {
 echo "todo - a script that uses obsessive-compulsion and git to get things done."
+echo "  be sure to isolate this from any other git-based projects."
+echo "  oh yeah; you have to get git installed for this to work. git it!"
 echo ""
 echo "	syntax:	todo FILENAME 'optional description'"
-echo "	
-echo "		todo init	- starts tracking todos in current directory (optional)";
+echo ""	
+echo "		todo init	- starts tracking todos in current directory";
 echo "		todo history	- lists all todos since last interaction with program";
 echo "		todo del FILE	- deletes FILE";
 echo "		todo purge	- deletes all todos";
@@ -15,29 +17,26 @@ if [ $1 ]
 then
   case "$1" in
   init)
-  file= git
-    if [ -f "$file" ]
+    if [ -a .gitignore ]
     then
-      if [ grep -l '!*.todo'  *.gitignore ]
-        echo "Initalizing project tracking."
-        echo "* /n !*.todo" > .gitignore
-      else
-        echo "You've already started tracking. You probably want to perform a commit instead."
-      fi
+      echo "Initalizing project tracking."
+      echo '* \n !*.todo' >.gitignore
     else
-      echo "Sorry. You don't have all the dependencies. Download git and everything should work."
+      echo "You've already started tracking. You probably want to perform a commit instead."
     fi
-  purge)
+  ;;
+  "purge")
     read -p  "This will purge all .todo files. Are you sure you want to? Press Y to confirm and any other key to cancel." RESP
-    if [ "$RESP" = "y" ]; then
+    if [ "$RESP" = "y" ]
+    then
       rm *.todo
       git add .
-      git commit -m "delete all todos"
+      git commit -m 'delete all todos'
     else
       echo "You cancelled the .todo purge."
     fi
   ;;
-  history)
+  "history")
     git log
   ;;
   del)
@@ -45,20 +44,20 @@ then
     then
       rm $2.todo
       git add .
-      git commit -m "delete $2"
+      git commit -m 'delete $2'
     fi
   ;;
   *)
     if [ $2 ]
-      echo "$2" > $1.todo
+    then
+      echo '$2' > $1.todo
     else
       touch $1.todo
     fi
     git add .
-    git commit -m "add $1"
+    git commit -m 'add $1'
   ;;
   esac
 else
-  help;
+  "help";
 fi
-}
