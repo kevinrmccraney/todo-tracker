@@ -11,6 +11,7 @@ echo "		todo init	- starts tracking todos in current directory";
 echo "		todo history	- lists all todos since last interaction with program";
 echo "		todo del FILE	- deletes FILE";
 echo "		todo purge	- deletes all todos";
+echo "		todo count	- counts number of todos";
 echo ""
 echo "								  Any questions?"
 }
@@ -19,19 +20,25 @@ if [ $1 ]
 then
   case "$1" in
   init)
-    if [ -a .gitignore ]
+    if [ -f ./.gitignore ]
     then
-      echo "Initalizing project tracking."
-      echo '* \n !*.todo' >.gitignore
+     echo "You've already started tracking. You probably want to perform a commit instead."
     else
-      echo "You've already started tracking. You probably want to perform a commit instead."
+      echo "Initalizing project tracking."
+      echo '* \n!*.todo' >.gitignore
+      git init -q
+      git add .
+      git commit -m "inital todo commit"
     fi
   ;;
+  "count")
+    ls -l ./*.todo 2> /dev/null | wc -l
+  ;;
   "purge")
-    read -p  "This will purge all .todo files. Are you sure you want to? Press Y to confirm and any other key to cancel." RESP
+    read -p "Press Y to purge all todo files and any other key to cancel." RESP
     if [ "$RESP" = "y" ]
     then
-      if [ -a .gitignore ]
+      if [ -f ./.gitignore ]
       then
         rm *.todo
         git add .
@@ -44,7 +51,7 @@ then
     fi
   ;;
   "history")
-    if [ -a .gitignore ]
+    if [ -f ./.gitignore ]
     then
       git log
     else
@@ -54,25 +61,25 @@ then
   del)
     if [ $2 ]
     then
-      rm $2.todo
+      rm "$2".todo
     fi
-    if [ -a .gitignore ]
+    if [ -f ./*.gitignore ]
     then
       git add .
-      git commit -m 'delete $2'
+      git commit -m 'delete "$2"'
     fi
   ;;
   *)
     if [ $2 ]
     then
-      echo "$2" > $1.todo
+      echo "$2" > "$1".todo
     else
-      touch $1.todo
+      touch "$1".todo
     fi
-    if [ -a .gitignore ]
+    if [ -f ./*.gitignore ]
     then
       git add .
-      git commit -m 'add $1'
+      git commit -m 'add "$1"'
     fi
   ;;
   esac
